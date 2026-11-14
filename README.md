@@ -54,6 +54,20 @@ Ollama doit être lancé (application ou `ollama serve`) avant d'exécuter la pa
 
 Ouvrez ensuite `rag_multimodal_agentique.ipynb` dans VS Code, sélectionnez le noyau `.venv` et exécutez les cellules dans l'ordre. Au premier lancement, les poids CLIP (~600 Mo) sont téléchargés automatiquement.
 
+## Adaptations par rapport au notebook du professeur
+
+Le code et les explications sont identiques au notebook d'origine, à l'exception de **deux cellules de configuration du LLM** :
+
+| Cellule | Original | Adaptation |
+|---|---|---|
+| Initialisation du modèle génératif | `OpenAI()` + clé API, `gpt-4.1-mini` | `OpenAI(base_url="http://localhost:11434/v1", api_key="ollama", timeout=1800)`, modèle `qwen3-vl-rag` |
+| Création de l'agent | `ChatOpenAI(model=..., temperature=0)` | mêmes paramètres + `base_url`, `api_key` et `timeout` vers Ollama |
+
+Ces adaptations ont été validées par des tests préalables :
+- l'API Responses d'Ollama accepte `instructions`, `input_text`, `input_image` (data URL) et `max_output_tokens` ;
+- `ChatOpenAI` pointé sur Ollama gère l'appel d'outils (`tool_calls`) et les messages contenant une image (`image_url`) ;
+- le délai `timeout=1800` est nécessaire sur CPU : une réponse avec plusieurs figures peut dépasser les 600 s par défaut du client.
+
 ## Avancement
 
 - [x] **1. Extraction** : texte par page (`resultats_pdf/textes/`) et images du PDF (`resultats_pdf/images/`)
@@ -62,5 +76,5 @@ Ouvrez ensuite `rag_multimodal_agentique.ipynb` dans VS Code, sélectionnez le n
 - [x] **4. Recherche** : similarité cosinus à partir d'un texte ou d'une image, affichage des k meilleurs résultats
 - [x] **Génération** : réponse fondée sur les sources avec un LLM vision local (Ollama)
 - [x] **5. Outil agentique** : la recherche RAG encapsulée dans un outil LangChain
-- [ ] **6. Agent ReAct** : raisonnement → action → observation, graphe compilé avec `create_agent`
-- [ ] **7. Tests** : requêtes texte, image et mixtes, avec analyse des appels d'outil
+- [x] **6. Agent ReAct** : raisonnement → action → observation, graphe compilé avec `create_agent`
+- [x] **7. Tests** : requêtes texte, image et mixtes, avec analyse des appels d'outil
