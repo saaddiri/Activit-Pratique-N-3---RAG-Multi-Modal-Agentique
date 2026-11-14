@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Environnement virtuel
+.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Données générées par le notebook (régénérables)
+resultats_pdf/
+chroma_pdf/
+
+# Secrets
+.env
